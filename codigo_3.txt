@@ -1,0 +1,14 @@
+program SomaNumeros;
+var
+  a, b, soma: integer;
+begin
+  writeln('Digite o primeiro número:');
+  readln(a);
+  writeln('Digite o segundo número:');
+  readln(b);
+  soma := a + b;
+  if soma > 10 then
+    writeln('A soma é maior que 10!')
+  else
+    writeln('A soma é 10 ou menor.');
+end.

@@ -4,7 +4,6 @@ Módulo analisador.py
 Implementa o analisador léxico para códigos em Pascal.
 Reconhece tokens como palavras reservadas, identificadores, números, strings,
 operadores e delimitadores.
-Pode ser utilizado como módulo em aplicações Flask ou scripts de linha de comando.
 """
 
 RESERVADAS = {
@@ -63,7 +62,7 @@ RESERVADAS = {
 
 OPERADORES = {'+', '-', '*', '/', '=', '>', '<'}
 OPERADORES_RELACIONAIS = {'>=', '<=', '<>', '>' , '<', '='}
-DELIMITADORES = {';', '(', ')', ',', '.', ':'}
+DELIMITADORES = {';', '(', ')', ',', '.', ':', '[', ']'}
 
 def is_letter(c):
     """Retorna True se o caractere for uma letra."""
@@ -133,6 +132,10 @@ def le_token(code, pos):
     # Atribuição
     if c == ':' and pos+1 < len(code) and code[pos+1] == '=':
         return ('ATRIB', ':=', pos+2)
+
+    # Operador de intervalo ..
+    if c == '.' and pos+1 < len(code) and code[pos+1] == '.':
+        return ('INTERVALO', '..', pos+2)
 
     # Operadores simples
     if c in OPERADORES:
