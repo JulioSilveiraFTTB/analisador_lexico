@@ -1,0 +1,12 @@
+var
+  x, y: integer;
+  z: real;
+
+begin
+  x := 10;
+  y := 20;
+  z := x + y / 2.0;
+  writeln(z);
+  if x = y then
+    writeln('Iguais');
+end.

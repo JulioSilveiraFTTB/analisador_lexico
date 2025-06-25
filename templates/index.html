@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analisador léxico</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/webp"
+      href="{{ url_for('static', filename='pascal.webp') }}"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">
+        <i class="fas fa-file-code"></i>
+      </div>
+      <div class="header-text">
+        <h1>Analisador léxico de Pascal</h1>
+        <p>Análise de tokens em código Pascal</p>
+      </div>
+    </header>
+
+    <div class="about-section">
+      <h2>Sobre o analisador léxico para Pascal</h2>
+      <p>
+        Este sistema realiza a análise léxica de códigos escritos em Pascal. Ele
+        identifica e classifica automaticamente os diferentes tipos de tokens
+        presentes no código, como identificadores, números, strings, operadores,
+        delimitadores e palavras reservadas.
+      </p>
+      <ul>
+        <li>
+          <strong>Envie</strong> um arquivo Pascal (.txt ou .pas) ou escolha um
+          exemplo pronto.
+        </li>
+        <li>
+          <strong>Veja</strong> o snippet do código e o resultado da análise
+          logo abaixo.
+        </li>
+        <li>
+          <strong>Alterne</strong> entre visualizar os tokens agrupados por tipo
+          ou na ordem original do código.
+        </li>
+      </ul>
+      <p>
+        O analisador descarta espaços em branco e quebras de linha, reconhecendo
+        cada elemento conforme as regras da linguagem Pascal. Ideal para
+        estudantes, professores e interessados em compiladores!
+      </p>
+    </div>
+
+    <div class="container">
+      <form method="POST" enctype="multipart/form-data" autocomplete="off">
+        <label for="file" class="custom-file-upload">
+          <i class="fas fa-upload"></i> Escolher arquivo
+        </label>
+        <input type="file" name="file" id="file" />
+        <textarea
+          name="code_text"
+          id="code-text-input"
+          style="display: none"
+        ></textarea>
+        <div class="form-buttons">
+          <button type="submit" class="action-btn">
+            <i class="fas fa-search"></i> Analisar
+          </button>
+          <button type="reset" id="clear-btn" class="action-btn clear">
+            <i class="fas fa-trash-alt"></i> Limpar
+          </button>
+        </div>
+      </form>
+
+      <div class="example-codes-section">
+        <h3>
+          Códigos de exemplo
+          <span class="help-icon" tabindex="0">?</span>
+          <span class="help-tooltip">
+            Exemplos de códigos em Pascal prontos para análise léxica.<br />
+            Clique em um dos botões para carregar automaticamente um código de
+            exemplo e visualizar como funciona a análise dos tokens da
+            linguagem.
+          </span>
+        </h3>
+        <div class="example-buttons">
+          <button class="example-btn" data-example="variables">
+            Variáveis
+          </button>
+          <button class="example-btn" data-example="conditionals">
+            Condicionais
+          </button>
+          <button class="example-btn" data-example="loops">Loops</button>
+        </div>
+      </div>
+
+      <div
+        id="snippet-section"
+        {%
+        if
+        not
+        code
+        %}style="display: none;"
+        {%
+        endif
+        %}
+      >
+        <h2>Snippet do código:</h2>
+        <div class="code-container">
+          <div class="code-header">
+            <span class="file-name">main.pas</span>
+            <span class="file-type">Pascal</span>
+          </div>
+          <pre class="code-snippet">{{ code }}</pre>
+        </div>
+      </div>
+
+      <div class="view-mode-section">
+        <label>
+          <input type="radio" name="view_mode" value="grouped" checked />
+          <span>Agrupado por tipo</span>
+        </label>
+        <label>
+          <input type="radio" name="view_mode" value="ordered" />
+          <span>Ordem original</span>
+        </label>
+      </div>
+
+      <div
+        id="results-section-grouped"
+        {%
+        if
+        not
+        tokens
+        %}style="display: none;"
+        {%
+        endif
+        %}
+      >
+        <h2>Resultado da análise léxica:</h2>
+        {% set grupos = {} %} {% for token, lexeme in tokens %} {% if token not
+        in grupos %} {% set _ = grupos.update({token: []}) %} {% endif %} {% set
+        _ = grupos[token].append(lexeme) %} {% endfor %} {% for tipo, lista in
+        grupos.items() %}
+        <div class="token-group">
+          <h3>{{ tipo }}</h3>
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Lexema</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for lexema in lista %}
+              <tr>
+                <td>{{ lexema }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div
+        id="results-section-ordered"
+        {%
+        if
+        not
+        tokens
+        %}style="display: none;"
+        {%
+        endif
+        %}
+        style="display: none"
+      >
+        <h2>Resultado da análise léxica:</h2>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Lexema</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for token, lexeme in tokens %}
+            <tr>
+              <td>{{ token }}</td>
+              <td>{{ lexeme }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        id="results-placeholder"
+        {%
+        if
+        tokens
+        %}style="display: none;"
+        {%
+        endif
+        %}
+      ></div>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+  </body>
+</html>
