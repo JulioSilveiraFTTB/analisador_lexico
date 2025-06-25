@@ -9,7 +9,7 @@
       href="{{ url_for('static', filename='styles.css') }}"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -21,6 +21,12 @@
       type="image/webp"
       href="{{ url_for('static', filename='pascal.webp') }}"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-pascal.min.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -122,7 +128,9 @@
             <span class="file-name">main.pas</span>
             <span class="file-type">Pascal</span>
           </div>
-          <pre class="code-snippet">{{ code }}</pre>
+          <pre
+            class="code-snippet"
+          ><code class="language-pascal">{{ code }}</code></pre>
         </div>
       </div>
 
